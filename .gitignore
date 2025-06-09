@@ -41,6 +41,7 @@ Thumbs.db
 *.zip
 *.tar.gz
 *.rar
+hoplink-minimal-*.zip
 
 # Debug files
 debug-*.log
