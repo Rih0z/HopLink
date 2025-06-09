@@ -3,7 +3,7 @@
  * Plugin Name: HopLink Minimal
  * Plugin URI: https://github.com/yourusername/hoplink-minimal
  * Description: 最小限のアフィリエイトリンク自動生成プラグイン
- * Version: 1.5.0
+ * Version: 1.6.0
  * Author: Your Name
  * License: GPL-2.0+
  * Text Domain: hoplink-minimal
@@ -15,7 +15,7 @@ if (!defined('ABSPATH')) {
 }
 
 // 定数定義
-define('HOPLINK_VERSION', '1.5.0');
+define('HOPLINK_VERSION', '1.6.0');
 define('HOPLINK_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('HOPLINK_PLUGIN_URL', plugin_dir_url(__FILE__));
 
