@@ -1,0 +1,52 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "hoplink/amazon-link",
+    "version": "1.0.0",
+    "title": "Amazon アフィリエイトリンク",
+    "category": "widgets",
+    "icon": "amazon",
+    "description": "Amazon URLを入力してアフィリエイトリンクを生成します",
+    "supports": {
+        "html": false,
+        "align": ["wide", "full"]
+    },
+    "textdomain": "hoplink",
+    "editorScript": "file:./index.js",
+    "editorStyle": "file:./editor.css",
+    "style": "file:./style.css",
+    "attributes": {
+        "url": {
+            "type": "string",
+            "default": ""
+        },
+        "asin": {
+            "type": "string",
+            "default": ""
+        },
+        "linkText": {
+            "type": "string",
+            "default": "Amazonで見る"
+        },
+        "buttonStyle": {
+            "type": "boolean",
+            "default": false
+        },
+        "showPrice": {
+            "type": "boolean",
+            "default": false
+        },
+        "showImage": {
+            "type": "boolean",
+            "default": false
+        },
+        "productInfo": {
+            "type": "object",
+            "default": {}
+        },
+        "openInNewTab": {
+            "type": "boolean",
+            "default": true
+        }
+    }
+}

@@ -1,0 +1,258 @@
+/**
+ * Cross Platform Admin Styles
+ *
+ * クロスプラットフォーム管理画面のスタイル
+ *
+ * @package HopLink
+ * @subpackage Admin
+ * @since 1.0.0
+ */
+
+/* 全体レイアウト */
+.hoplink-cross-platform-admin {
+    max-width: 1200px;
+    margin: 20px 0;
+}
+
+/* セクション */
+.hoplink-settings-section,
+.hoplink-test-section,
+.hoplink-stats-section {
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+    margin-bottom: 20px;
+    padding: 20px;
+}
+
+.hoplink-settings-section h2,
+.hoplink-test-section h2,
+.hoplink-stats-section h2 {
+    margin-top: 0;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+/* フォームテーブル */
+.form-table th {
+    width: 200px;
+}
+
+.form-table td select,
+.form-table td input[type="text"],
+.form-table td input[type="url"] {
+    width: 100%;
+    max-width: 400px;
+}
+
+.form-table .description {
+    margin-top: 5px;
+    color: #666;
+    font-style: italic;
+}
+
+/* テストツール */
+.hoplink-test-tool {
+    margin-top: 20px;
+}
+
+.hoplink-test-input {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.hoplink-test-input label {
+    font-weight: 600;
+    min-width: 120px;
+}
+
+.hoplink-test-input input[type="url"] {
+    flex: 1;
+    max-width: 500px;
+}
+
+/* テスト結果 */
+.hoplink-test-results {
+    margin-top: 20px;
+    padding: 20px;
+    background: #f8f8f8;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    display: none;
+}
+
+.hoplink-test-results.show {
+    display: block;
+}
+
+.hoplink-test-result-container h3 {
+    margin-top: 0;
+    color: #23282d;
+}
+
+.hoplink-test-product {
+    margin: 15px 0;
+    padding: 15px;
+    background: #fff;
+    border-left: 4px solid;
+    border-radius: 4px;
+}
+
+.hoplink-test-product.rakuten {
+    border-left-color: #bf0000;
+}
+
+.hoplink-test-product.amazon {
+    border-left-color: #ff9900;
+}
+
+.hoplink-test-product h4 {
+    margin: 0 0 10px 0;
+    color: #23282d;
+}
+
+.hoplink-test-product .product-info p {
+    margin: 5px 0;
+}
+
+.hoplink-test-no-match {
+    padding: 15px;
+    background: #fff3cd;
+    border: 1px solid #ffeeba;
+    border-radius: 4px;
+    color: #856404;
+}
+
+.match-score {
+    font-weight: bold;
+    color: #28a745;
+}
+
+/* 統計グリッド */
+.hoplink-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.hoplink-stat-item {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    padding: 20px;
+    text-align: center;
+}
+
+.hoplink-stat-label {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 10px;
+}
+
+.hoplink-stat-value {
+    font-size: 32px;
+    font-weight: bold;
+    color: #23282d;
+}
+
+/* ボタン */
+.button {
+    cursor: pointer;
+}
+
+.button:disabled {
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+/* ローディング */
+.hoplink-loading {
+    display: inline-block;
+    margin-left: 10px;
+}
+
+.hoplink-loading::after {
+    content: "";
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #0073aa;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* 成功・エラーメッセージ */
+.hoplink-notice {
+    margin: 10px 0;
+    padding: 12px;
+    border-left: 4px solid;
+    background: #fff;
+    box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
+}
+
+.hoplink-notice.success {
+    border-left-color: #46b450;
+    background-color: #f0f8f0;
+}
+
+.hoplink-notice.error {
+    border-left-color: #dc3545;
+    background-color: #fef7f7;
+}
+
+/* レスポンシブ */
+@media (max-width: 782px) {
+    .hoplink-test-input {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .hoplink-test-input label {
+        min-width: auto;
+    }
+    
+    .hoplink-test-input input[type="url"] {
+        width: 100%;
+    }
+    
+    .hoplink-stats-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* WordPress管理画面のダークモード対応 */
+@media (prefers-color-scheme: dark) {
+    .hoplink-settings-section,
+    .hoplink-test-section,
+    .hoplink-stats-section {
+        background: #1e1e1e;
+        border-color: #3c434a;
+    }
+    
+    .hoplink-test-results {
+        background: #2c3338;
+        border-color: #3c434a;
+    }
+    
+    .hoplink-test-product {
+        background: #1e1e1e;
+    }
+    
+    .hoplink-stat-item {
+        background: #2c3338;
+        border-color: #3c434a;
+    }
+    
+    .hoplink-stat-value {
+        color: #fff;
+    }
+}

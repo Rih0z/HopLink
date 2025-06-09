@@ -1,0 +1,24 @@
+/**
+ * HopLink Admin Styles
+ */
+
+/* General admin styles */
+.hoplink-admin-notice {
+    margin: 15px 0;
+}
+
+/* Loading animation */
+.hoplink-loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #0073aa;
+    border-radius: 50%;
+    animation: hoplink-spin 1s linear infinite;
+}
+
+@keyframes hoplink-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}

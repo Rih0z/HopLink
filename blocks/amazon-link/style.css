@@ -1,0 +1,75 @@
+/**
+ * Amazon Link Block Styles
+ */
+
+.hoplink-amazon-block {
+    margin: 1.5em 0;
+}
+
+.hoplink-amazon-block .hoplink-link {
+    color: #0073aa;
+    text-decoration: underline;
+}
+
+.hoplink-amazon-block .hoplink-link:hover {
+    color: #005177;
+    text-decoration: none;
+}
+
+.hoplink-amazon-block .hoplink-button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #ff9900;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: bold;
+    transition: background-color 0.2s;
+}
+
+.hoplink-amazon-block .hoplink-button:hover {
+    background-color: #e68a00;
+    color: #fff;
+}
+
+.hoplink-amazon-block .hoplink-product-image {
+    max-width: 200px;
+    height: auto;
+    margin: 0 1em 1em 0;
+    float: left;
+}
+
+.hoplink-amazon-block .hoplink-product-name {
+    margin: 0 0 0.5em;
+    font-size: 1.1em;
+}
+
+.hoplink-amazon-block .hoplink-price {
+    color: #b12704;
+    font-size: 1.2em;
+    font-weight: bold;
+    margin: 0.5em 0;
+}
+
+.hoplink-amazon-block .button-style {
+    background: #f7f7f7;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+}
+
+.hoplink-amazon-block .button-style .hoplink-product-image {
+    float: none;
+    margin: 0 auto 1em;
+    display: block;
+}
+
+/* レスポンシブデザイン */
+@media (max-width: 600px) {
+    .hoplink-amazon-block .hoplink-product-image {
+        float: none;
+        margin: 0 auto 1em;
+        display: block;
+    }
+}

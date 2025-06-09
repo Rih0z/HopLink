@@ -1,0 +1,49 @@
+/**
+ * Amazon Link Block Editor Styles
+ */
+
+.hoplink-amazon-block .hoplink-asin-info {
+    margin: 0.5em 0;
+    font-size: 0.9em;
+    color: #555;
+}
+
+.hoplink-amazon-block .hoplink-asin-info code {
+    background: #f0f0f0;
+    padding: 2px 4px;
+    border-radius: 3px;
+    font-family: monospace;
+}
+
+.hoplink-amazon-block .hoplink-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2em;
+    background: #f7f7f7;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.hoplink-amazon-block .hoplink-loading span {
+    margin-left: 0.5em;
+}
+
+.hoplink-amazon-block .hoplink-preview {
+    border: 1px dashed #ccc;
+    padding: 1em;
+    border-radius: 4px;
+    background: #fafafa;
+}
+
+.hoplink-amazon-block .hoplink-preview.button-style {
+    text-align: center;
+}
+
+.hoplink-amazon-block .hoplink-content {
+    overflow: hidden;
+}
+
+.hoplink-amazon-block .components-notice {
+    margin: 0 0 1em;
+}

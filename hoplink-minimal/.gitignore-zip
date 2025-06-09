@@ -1,0 +1,37 @@
+# ZIP作成時の除外リスト
+# このファイルはZIP作成時にconfig.phpを含めるために使用
+
+# WordPress
+*.log
+wp-config.php
+wp-content/advanced-cache.php
+wp-content/backup-db/
+wp-content/backups/
+wp-content/blogs.dir/
+wp-content/cache/
+wp-content/upgrade/
+wp-content/uploads/
+wp-content/mu-plugins/
+wp-content/wp-cache-config.php
+wp-content/plugins/hello.php
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Git関連
+.git/
+.gitignore
+.gitignore-zip
+
+# 開発用ファイル（config.phpは含める）
+dev-config.php
+test/
+tests/
