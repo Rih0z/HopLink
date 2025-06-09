@@ -1,21 +1,44 @@
 /**
- * HopLink スタイルシート - 広告最適化版
+ * HopLink スタイルシート - rihobeer.com デザイン最適化版
  */
 
 /* ================== */
 /* 基本コンテナ設定 */
 /* ================== */
 .hoplink-container {
-    margin: 30px 0;
+    margin: 1.8em 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.8;
+    color: #333;
+}
+
+/* レスポンシブベースフォントサイズ */
+@media (max-width: 768px) {
+    .hoplink-container {
+        font-size: 13px;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+    .hoplink-container {
+        font-size: 16px;
+    }
+}
+
+@media (min-width: 1025px) {
+    .hoplink-container {
+        font-size: 16px;
+    }
 }
 
 /* 広告コンテナ */
 .hoplink-ad-container {
-    background: #f8f9fa;
-    border: 2px solid #e9ecef;
+    background: #fff;
+    border: 1px solid rgba(25, 68, 142, 0.1);
     border-radius: 12px;
-    padding: 20px;
+    padding: 1.8em;
     position: relative;
+    box-shadow: 0 2px 8px rgba(25, 68, 142, 0.05);
 }
 
 /* 広告コンテナの擬似要素で「広告」表示 */
@@ -23,13 +46,14 @@
     content: "広告";
     position: absolute;
     top: -12px;
-    left: 20px;
-    background: #ff6600;
+    left: 1.8em;
+    background: #e60033;
     color: #fff;
-    padding: 2px 12px;
-    font-size: 12px;
+    padding: 4px 12px;
+    font-size: 13px;
     font-weight: bold;
-    border-radius: 4px;
+    border-radius: 6px;
+    letter-spacing: 0.5px;
 }
 
 /* ================== */
@@ -37,8 +61,8 @@
 /* ================== */
 .hoplink-products-grid {
     display: grid;
-    gap: 20px;
-    margin-top: 10px;
+    gap: 1.8em;
+    margin-top: 1.8em;
 }
 
 /* PC: 4列表示 */
@@ -66,7 +90,7 @@
 .hoplink-container.hoplink-list .hoplink-products-grid {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 1.8em;
 }
 
 .hoplink-container.hoplink-list .hoplink-product {
@@ -77,7 +101,7 @@
 
 .hoplink-container.hoplink-list .hoplink-product-image {
     flex: 0 0 150px;
-    margin-right: 20px;
+    margin-right: 1.8em;
 }
 
 .hoplink-container.hoplink-list .hoplink-product-info {
@@ -89,11 +113,11 @@
 /* ================== */
 .hoplink-product {
     background: #fff;
-    border: 2px solid #dee2e6;
-    border-radius: 10px;
-    padding: 15px;
+    border: 1px solid rgba(25, 68, 142, 0.1);
+    border-radius: 12px;
+    padding: 1.8em;
     position: relative;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+    box-shadow: 0 2px 8px rgba(25, 68, 142, 0.05);
     transition: all 0.3s ease;
     height: 100%;
     display: flex;
@@ -102,9 +126,9 @@
 
 /* 広告商品のホバー効果 */
 .hoplink-ad-product:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
-    border-color: #ff6600;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(25, 68, 142, 0.1);
+    border-color: rgba(25, 68, 142, 0.2);
 }
 
 /* ================== */
@@ -112,14 +136,15 @@
 /* ================== */
 .hoplink-product-image {
     text-align: center;
-    margin-bottom: 15px;
+    margin-bottom: 1.8em;
     height: 180px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #f8f9fa;
+    background: #fff;
     border-radius: 8px;
     overflow: hidden;
+    border: 1px solid rgba(25, 68, 142, 0.05);
 }
 
 .hoplink-product-image img {
@@ -130,7 +155,7 @@
 }
 
 .hoplink-product:hover .hoplink-product-image img {
-    transform: scale(1.05);
+    transform: scale(1.02);
 }
 
 /* ================== */
@@ -144,12 +169,12 @@
 }
 
 .hoplink-product-title {
-    font-size: 14px;
-    margin: 0 0 10px 0;
+    font-size: 13px;
+    margin: 0 0 1em 0;
     font-weight: 500;
-    line-height: 1.4;
+    line-height: 1.8;
     color: #333;
-    min-height: 40px;
+    min-height: 3.6em;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
@@ -158,32 +183,33 @@
 
 /* メタ情報 */
 .hoplink-product-meta {
-    margin: 10px 0;
+    margin: 1em 0;
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 12px;
+    gap: 1em;
 }
 
 .hoplink-price {
-    font-size: 18px;
+    font-size: 20px;
     font-weight: bold;
-    color: #dc3545;
+    color: #e60033;
 }
 
 .hoplink-review {
-    color: #ff9800;
-    font-size: 14px;
+    color: #e95295;
+    font-size: 13px;
     display: flex;
     align-items: center;
 }
 
 /* ショップ名 */
 .hoplink-product-shop {
-    font-size: 12px;
-    color: #6c757d;
-    margin: 5px 0 15px 0;
+    font-size: 13px;
+    color: #666;
+    margin: 0.5em 0 1.5em 0;
     flex: 1;
+    line-height: 1.8;
 }
 
 /* ================== */
@@ -191,25 +217,51 @@
 /* ================== */
 .hoplink-button {
     display: inline-block;
-    background: linear-gradient(135deg, #ff6600 0%, #ff8833 100%);
+    background: #19448e;
     color: #fff !important;
-    padding: 12px 20px;
-    border-radius: 6px;
+    padding: 1em 1.8em;
+    border-radius: 8px;
     text-decoration: none;
     font-weight: bold;
-    font-size: 14px;
+    font-size: 13px;
     transition: all 0.3s ease;
     text-align: center;
     width: 100%;
     margin-top: auto;
-    box-shadow: 0 3px 6px rgba(255, 102, 0, 0.3);
+    box-shadow: 0 2px 6px rgba(25, 68, 142, 0.2);
+    line-height: 1.8;
 }
 
 .hoplink-button:hover {
-    background: linear-gradient(135deg, #ff8833 0%, #ff6600 100%);
+    background: rgba(25, 68, 142, 0.9);
     color: #fff !important;
     transform: translateY(-1px);
-    box-shadow: 0 5px 10px rgba(255, 102, 0, 0.4);
+    box-shadow: 0 4px 12px rgba(25, 68, 142, 0.3);
+}
+
+/* アクセントカラー対応 */
+.hoplink-button.hoplink-accent-red {
+    background: #e60033;
+}
+
+.hoplink-button.hoplink-accent-red:hover {
+    background: rgba(230, 0, 51, 0.9);
+}
+
+.hoplink-button.hoplink-accent-pink {
+    background: #e95295;
+}
+
+.hoplink-button.hoplink-accent-pink:hover {
+    background: rgba(233, 82, 149, 0.9);
+}
+
+.hoplink-button.hoplink-accent-purple {
+    background: #884898;
+}
+
+.hoplink-button.hoplink-accent-purple:hover {
+    background: rgba(136, 72, 152, 0.9);
 }
 
 /* ================== */
@@ -217,46 +269,62 @@
 /* ================== */
 .hoplink-platform-badge {
     position: absolute;
-    top: 10px;
-    right: 10px;
-    padding: 4px 10px;
+    top: 1em;
+    right: 1em;
+    padding: 0.3em 0.8em;
     border-radius: 20px;
     font-size: 11px;
     font-weight: bold;
     letter-spacing: 0.5px;
+    line-height: 1.2;
 }
 
 .hoplink-platform-badge.hoplink-rakuten {
-    background: #bf0000;
+    background: #e60033;
     color: #fff;
 }
 
 .hoplink-platform-badge.hoplink-amazon {
-    background: #ff9900;
-    color: #232f3e;
+    background: #884898;
+    color: #fff;
 }
 
 /* ================== */
 /* タイトル・開示文 */
 /* ================== */
 .hoplink-auto-title {
-    font-size: 20px;
-    margin: 0 0 20px 0;
-    padding-bottom: 12px;
-    border-bottom: 3px solid #ff6600;
+    font-size: 36px;
+    margin: 0 0 1.8em 0;
+    padding-bottom: 0.6em;
+    border-bottom: 2px solid #19448e;
     color: #333;
     font-weight: bold;
     text-align: center;
+    line-height: 1.8;
+}
+
+/* レスポンシブタイトル */
+@media (max-width: 768px) {
+    .hoplink-auto-title {
+        font-size: 20px;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+    .hoplink-auto-title {
+        font-size: 28px;
+    }
 }
 
 .hoplink-disclosure {
-    margin-top: 20px;
-    padding: 12px 16px;
-    background: #fff5e6;
-    border-left: 4px solid #ff6600;
+    margin-top: 1.8em;
+    padding: 1em 1.2em;
+    background: rgba(25, 68, 142, 0.02);
+    border-left: 3px solid #19448e;
     font-size: 13px;
     color: #666;
-    border-radius: 4px;
+    border-radius: 6px;
+    line-height: 1.8;
 }
 
 /* ================== */
@@ -266,7 +334,11 @@
 /* タブレット */
 @media (max-width: 1023px) {
     .hoplink-ad-container {
-        padding: 15px;
+        padding: 1.5em;
+    }
+    
+    .hoplink-product {
+        padding: 1.5em;
     }
     
     .hoplink-product-title {
@@ -274,49 +346,54 @@
     }
     
     .hoplink-price {
-        font-size: 16px;
+        font-size: 18px;
     }
     
     .hoplink-button {
-        padding: 10px 16px;
+        padding: 0.8em 1.5em;
         font-size: 13px;
     }
 }
 
 /* スマートフォン */
 @media (max-width: 767px) {
+    .hoplink-container {
+        margin: 1.5em 0;
+    }
+    
     .hoplink-ad-container {
-        padding: 12px;
+        padding: 1.2em;
         border-radius: 8px;
     }
     
     .hoplink-ad-container::before {
-        font-size: 11px;
-        padding: 2px 10px;
+        font-size: 12px;
+        padding: 3px 10px;
         top: -10px;
-        left: 15px;
+        left: 1.2em;
     }
     
     .hoplink-products-grid {
-        gap: 15px;
+        gap: 1.5em;
+        margin-top: 1.5em;
     }
     
     .hoplink-product {
-        padding: 12px;
+        padding: 1.2em;
     }
     
     .hoplink-product-image {
         height: 150px;
-        margin-bottom: 12px;
+        margin-bottom: 1.2em;
     }
     
     .hoplink-product-title {
         font-size: 13px;
-        min-height: 36px;
+        min-height: 3.2em;
     }
     
     .hoplink-price {
-        font-size: 16px;
+        font-size: 18px;
     }
     
     .hoplink-review {
@@ -324,42 +401,44 @@
     }
     
     .hoplink-product-shop {
-        font-size: 11px;
+        font-size: 13px;
     }
     
     .hoplink-button {
-        padding: 10px 15px;
+        padding: 0.8em 1.2em;
         font-size: 13px;
     }
     
     .hoplink-auto-title {
-        font-size: 18px;
-        margin-bottom: 15px;
+        margin-bottom: 1.5em;
     }
     
     .hoplink-disclosure {
-        font-size: 12px;
-        padding: 10px 12px;
+        font-size: 13px;
+        padding: 0.8em 1em;
+        margin-top: 1.5em;
     }
     
     .hoplink-platform-badge {
         font-size: 10px;
-        padding: 3px 8px;
+        padding: 0.2em 0.6em;
+        top: 0.8em;
+        right: 0.8em;
     }
 }
 
 /* 小さいスマートフォン */
 @media (max-width: 480px) {
     .hoplink-product-title {
-        font-size: 12px;
+        font-size: 13px;
     }
     
     .hoplink-price {
-        font-size: 15px;
+        font-size: 18px;
     }
     
     .hoplink-button {
-        font-size: 12px;
+        font-size: 13px;
     }
 }
 
@@ -416,18 +495,24 @@
 
 /* ダークモード対応 */
 @media (prefers-color-scheme: dark) {
+    .hoplink-container {
+        color: #e5e5e5;
+    }
+    
     .hoplink-ad-container {
         background: #1a1a1a;
-        border-color: #333;
+        border-color: rgba(25, 68, 142, 0.3);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
     }
     
     .hoplink-product {
         background: #2a2a2a;
-        border-color: #444;
+        border-color: rgba(25, 68, 142, 0.2);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     }
     
     .hoplink-product-title {
-        color: #f0f0f0;
+        color: #e5e5e5;
     }
     
     .hoplink-product-shop {
@@ -436,16 +521,26 @@
     
     .hoplink-product-image {
         background: #333;
+        border-color: rgba(25, 68, 142, 0.1);
     }
     
     .hoplink-auto-title {
-        color: #f0f0f0;
-        border-color: #ff8833;
+        color: #e5e5e5;
+        border-color: #19448e;
     }
     
     .hoplink-disclosure {
-        background: #332200;
+        background: rgba(25, 68, 142, 0.05);
         color: #ccc;
-        border-color: #ff8833;
+        border-color: #19448e;
+    }
+    
+    .hoplink-ad-container::before {
+        background: #e60033;
+    }
+    
+    .hoplink-ad-product:hover {
+        border-color: rgba(25, 68, 142, 0.4);
+        box-shadow: 0 4px 16px rgba(25, 68, 142, 0.2);
     }
 }
