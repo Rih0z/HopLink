@@ -5,116 +5,45 @@
 class HopLink_Analyzer {
     
     /**
-     * ビール関連キーワード辞書を取得
+     * キーワードマネージャーインスタンス
      */
-    private function get_beer_keywords() {
-        // デフォルトキーワード
-        $default_keywords = array(
-        // ビアスタイル - IPA系
-        'IPA', 'インディアペールエール', 'ヘイジーIPA', 'Hazy IPA', 'NEIPA', 
-        'ニューイングランドIPA', 'ウエストコーストIPA', 'West Coast IPA', 
-        'セッションIPA', 'Session IPA', 'ダブルIPA', 'DIPA', 'トリプルIPA',
-        'ブラックIPA', 'Black IPA', 'ホワイトIPA', 'White IPA',
-        
-        // ビアスタイル - ペールエール系
-        'ペールエール', 'Pale Ale', 'アメリカンペールエール', 'APA',
-        'イングリッシュペールエール', 'ベルジャンペールエール',
-        
-        // ビアスタイル - ラガー系
-        'ラガー', 'Lager', 'ピルスナー', 'Pilsner', 'ヘレス', 'Helles',
-        'ドルトムンダー', 'メルツェン', 'ボック', 'Bock', 'ドッペルボック',
-        'シュバルツ', 'Schwarzbier',
-        
-        // ビアスタイル - ダーク系
-        'スタウト', 'Stout', 'ポーター', 'Porter', 'インペリアルスタウト',
-        'Imperial Stout', 'バルチックポーター', 'Baltic Porter',
-        'ミルクスタウト', 'オートミールスタウト',
-        
-        // ビアスタイル - 小麦系
-        'ヴァイツェン', 'Weizen', 'ベルジャンホワイト', 'ヴィットビア',
-        'ヘフェヴァイツェン', 'Hefeweizen', 'ヴァイスビア', 'Weissbier',
-        
-        // ビアスタイル - サワー系
-        'サワーエール', 'Sour Ale', 'ゴーゼ', 'Gose', 'ベルリーナヴァイセ',
-        'Berliner Weisse', 'ランビック', 'Lambic', 'フランダースレッドエール',
-        
-        // ビアスタイル - その他
-        'バーレイワイン', 'Barleywine', 'セゾン', 'Saison', 'ファームハウスエール',
-        'トリペル', 'Tripel', 'デュベル', 'Dubbel', 'ベルジャンストロング',
-        
-        // 日本のブルワリー
-        'ヤッホーブルーイング', 'よなよなエール', '水曜日のネコ', 'インドの青鬼',
-        'コエド', 'COEDO', 'コエドブルワリー', '常陸野ネスト', 'ベアードビール',
-        'サンクトガーレン', 'スワンレイクビール', '富士桜高原麦酒', 'エチゴビール',
-        'うちゅうブルーイング', 'OUTSIDER Brewing', 'アウトサイダーブルーイング',
-        '新月ビア', '舞浜地ビール工房', 'Be Easy Brewing', 'ビーイージーブルーイング',
-        'Y.Y.G.ブルワリー', 'ワイワイジーブルワリー', 'Far Yeast', 'ファーイースト',
-        'VERTERE', 'ベルテレ', 'カケガワビール', '箕面ビール', '志賀高原ビール',
-        
-        // 海外ブルワリー
-        'Cloudburst', 'クラウドバースト', 'Brujos', 'ブルホス', 'Fremont',
-        'フレモント', 'Stone', 'ストーン', 'Brewdog', 'ブリュードッグ',
-        
-        // ビール関連用語
-        'ホップ', 'Hop', 'モルト', 'Malt', '麦芽', '酵母', 'イースト', 'Yeast',
-        '醸造', 'ブルワリー', 'Brewery', '醸造所', 'ブリューパブ', 'Brewpub',
-        'タップルーム', 'Taproom', 'ビアバー', 'ビアパブ', 'ブルーパブ',
-        'IBU', '国際苦味単位', 'ABV', 'アルコール度数', 'SRM', '色度',
-        
-        // 重要人物
-        '丹羽智', 'Satoshi Niwa',
-        
-        // イベント・アワード
-        'World Beer Cup', 'ワールドビアカップ', 'Beer 1', 'ビアワン',
-        'Great American Beer Festival', 'GABF',
-        
-        // 一般的なビール用語
-        'クラフトビール', 'Craft Beer', '地ビール', 'ビール', '発泡酒', 
-        '第三のビール', '生ビール', '瓶ビール', '缶ビール', 'ドラフトビール',
-        'タップリスト', 'フライト', 'テイスティング',
-        
-        // 関連商品
-        'ビールグラス', 'ビアグラス', 'ジョッキ', 'タンブラー', 'グラウラー',
-        'ビールサーバー', 'ホームタップ', 'ビールギフト', 'ビールセット',
-        'IPAグラス', 'パイントグラス', 'ピルスナーグラス', 'ヴァイツェングラス'
-    );
-        
-        // カスタムキーワードを追加
-        $custom_keywords = get_option('hoplink_custom_keywords', '');
-        if (!empty($custom_keywords)) {
-            $custom_array = array_filter(array_map('trim', explode("\n", $custom_keywords)));
-            $default_keywords = array_merge($default_keywords, $custom_array);
+    private $keyword_manager = null;
+    
+    /**
+     * キーワードマネージャーを取得
+     */
+    private function get_keyword_manager() {
+        if ($this->keyword_manager === null) {
+            require_once HOPLINK_PLUGIN_DIR . 'includes/class-keyword-manager.php';
+            $this->keyword_manager = new HopLink_Keyword_Manager();
         }
-        
-        return $default_keywords;
+        return $this->keyword_manager;
     }
     
     /**
-     * 記事からキーワードを抽出
+     * 記事から優先度付きキーワードを抽出
      */
     public function extract_keywords($content, $limit = 5) {
-        // HTMLタグを除去
-        $text = wp_strip_all_tags($content);
+        $keyword_manager = $this->get_keyword_manager();
         
-        // キーワードを取得
-        $beer_keywords = $this->get_beer_keywords();
+        // 多様化されたキーワードを抽出
+        $diverse_keywords = $keyword_manager->extract_diverse_keywords($content, $limit);
         
-        // キーワードの出現回数をカウント
-        $keyword_counts = array();
-        
-        foreach ($beer_keywords as $keyword) {
-            // 大文字小文字を区別せずに検索
-            $count = substr_count(strtolower($text), strtolower($keyword));
-            if ($count > 0) {
-                $keyword_counts[$keyword] = $count;
-            }
+        // シンプルな配列として返す（後方互換性のため）
+        $simple_keywords = array();
+        foreach ($diverse_keywords as $keyword_data) {
+            $simple_keywords[] = $keyword_data['keyword'];
         }
         
-        // 出現回数順にソート
-        arsort($keyword_counts);
-        
-        // 上位のキーワードを返す
-        return array_slice(array_keys($keyword_counts), 0, $limit);
+        return $simple_keywords;
+    }
+    
+    /**
+     * 記事から詳細なキーワード情報を抽出
+     */
+    public function extract_keywords_detailed($content, $limit = 5) {
+        $keyword_manager = $this->get_keyword_manager();
+        return $keyword_manager->extract_diverse_keywords($content, $limit);
     }
     
     /**
@@ -140,7 +69,7 @@ class HopLink_Analyzer {
     }
     
     /**
-     * 記事に基づいて商品を自動選択
+     * 記事に基づいて商品を自動選択（多様化検索対応）
      */
     public function get_products_for_post($post_id, $limit = 3) {
         $post = get_post($post_id);
@@ -151,80 +80,293 @@ class HopLink_Analyzer {
         // タイトルと本文を結合
         $content = $post->post_title . ' ' . $post->post_content;
         
-        // キーワード抽出
-        $keywords = $this->extract_keywords($content);
+        // 詳細なキーワード情報を抽出（4つの多様なキーワード）
+        $detailed_keywords = $this->extract_keywords_detailed($content, 4);
         
-        if (empty($keywords)) {
+        if (empty($detailed_keywords)) {
             return array();
         }
         
-        // メインキーワードで検索
+        // プラットフォーム別の最適化検索を実行
+        $keyword_manager = $this->get_keyword_manager();
         $api = new HopLink_API();
-        $products = array();
+        $all_products = array();
         
-        // 複数のキーワードで検索して結果をマージ
-        foreach (array_slice($keywords, 0, 2) as $keyword) {
-            $results = $api->search_all($keyword, 'all');
-            $products = array_merge($products, $results);
+        // 楽天向けキーワードで検索
+        $rakuten_keywords = $keyword_manager->get_platform_optimized_keywords($detailed_keywords, 'rakuten');
+        foreach (array_slice($rakuten_keywords, 0, 2) as $keyword) {
+            $results = $api->search_all($keyword, 'rakuten');
+            foreach ($results as $result) {
+                $result['search_keyword'] = $keyword;
+                $result['search_platform'] = 'rakuten';
+                $all_products[] = $result;
+            }
         }
         
-        // 重複を除去
+        // Amazon向けキーワードで検索
+        $amazon_keywords = $keyword_manager->get_platform_optimized_keywords($detailed_keywords, 'amazon');
+        foreach (array_slice($amazon_keywords, 0, 2) as $keyword) {
+            $results = $api->search_all($keyword, 'amazon');
+            foreach ($results as $result) {
+                $result['search_keyword'] = $keyword;
+                $result['search_platform'] = 'amazon';
+                $all_products[] = $result;
+            }
+        }
+        
+        // 重複を除去（タイトルベース）
         $unique_products = array();
         $seen_titles = array();
         
-        foreach ($products as $product) {
-            $title_key = md5($product['title']);
+        foreach ($all_products as $product) {
+            $title_key = md5(strtolower(trim($product['title'])));
             if (!isset($seen_titles[$title_key])) {
                 $unique_products[] = $product;
                 $seen_titles[$title_key] = true;
             }
         }
         
+        // 商品の関連度スコアを計算
+        $scored_products = $this->score_product_relevance($unique_products, $detailed_keywords);
+        
+        // スコア順でソート
+        usort($scored_products, function($a, $b) {
+            return $b['relevance_score'] <=> $a['relevance_score'];
+        });
+        
         // 指定数に制限
-        return array_slice($unique_products, 0, $limit);
+        return array_slice($scored_products, 0, $limit);
     }
     
     /**
-     * フォールバック検索キーワードを生成
+     * 商品の関連度スコアを計算
      */
-    public function get_fallback_keywords($original_keywords) {
-        $fallback_keywords = array();
+    private function score_product_relevance($products, $keywords) {
+        $scored_products = array();
         
-        // カテゴリ判定
-        $category = $this->determine_category($original_keywords);
-        
-        // カテゴリ別のフォールバックキーワード
-        $category_fallbacks = array(
-            'beer' => array('クラフトビール', 'ビールセット', '地ビール'),
-            'glass' => array('ビールグラス', 'ビアグラス', 'IPAグラス'),
-            'gift' => array('ビールギフト', 'クラフトビール ギフト', 'ビール 詰め合わせ'),
-            'equipment' => array('ビールサーバー', 'ホームタップ', 'ビール用品')
-        );
-        
-        if (isset($category_fallbacks[$category])) {
-            $fallback_keywords = array_merge($fallback_keywords, $category_fallbacks[$category]);
+        foreach ($products as $product) {
+            $score = 0;
+            $product_text = strtolower($product['title'] . ' ' . $product['shop']);
+            
+            // キーワードマッチングスコア
+            foreach ($keywords as $keyword_data) {
+                $keyword = strtolower($keyword_data['keyword']);
+                $priority = $keyword_data['priority'];
+                
+                if (strpos($product_text, $keyword) !== false) {
+                    $score += $priority * 10; // 基本マッチングスコア
+                }
+            }
+            
+            // プラットフォーム多様性ボーナス
+            if (isset($product['platform'])) {
+                $score += 1; // プラットフォーム情報があるボーナス
+            }
+            
+            // 価格帯によるスコア調整
+            if (isset($product['price']) && $product['price'] > 0) {
+                if ($product['price'] >= 1000 && $product['price'] <= 5000) {
+                    $score += 2; // 適正価格帯ボーナス
+                }
+            }
+            
+            // レビュースコアボーナス
+            if (isset($product['review']) && $product['review'] > 4.0) {
+                $score += 1;
+            }
+            
+            $product['relevance_score'] = $score;
+            $scored_products[] = $product;
         }
         
-        // ビアスタイルから一般的な商品へ
+        return $scored_products;
+    }
+    
+    /**
+     * 改善されたフォールバック検索キーワードを生成
+     */
+    public function get_fallback_keywords($original_keywords) {
+        $keyword_manager = $this->get_keyword_manager();
+        $fallback_keywords = array();
+        
+        // 元のキーワードのカテゴリ情報を取得
+        $categorized_keywords = $keyword_manager->categorize_keywords($original_keywords);
+        
+        // カテゴリ別の改善されたフォールバックキーワード
+        $category_fallbacks = array(
+            'beer_styles' => array(
+                'クラフトビール',
+                'ビール 詰め合わせ',
+                '地ビール セット',
+                'エール ビール',
+                'ラガー ビール'
+            ),
+            'breweries' => array(
+                'クラフトビール',
+                '日本 クラフトビール',
+                '地ビール',
+                'ブルワリー ビール',
+                '限定 ビール'
+            ),
+            'related_products' => array(
+                'ビールグラス',
+                'ビアグラス セット',
+                'IPAグラス',
+                'ビール 雑貨',
+                'ビール グッズ'
+            ),
+            'ingredients' => array(
+                'ホップ ビール',
+                'クラフトビール IPA',
+                'モルト ビール',
+                'フルーティ ビール'
+            ),
+            'locations' => array(
+                '地ビール',
+                'ご当地 ビール',
+                '国産 クラフトビール',
+                '日本 ビール'
+            ),
+            'flavor_descriptions' => array(
+                'フルーティ ビール',
+                'ホッピー ビール',
+                'クリーミー ビール',
+                '苦味 ビール'
+            )
+        );
+        
+        // カテゴリに基づいてフォールバックキーワードを選択
+        foreach ($categorized_keywords as $category => $keywords) {
+            if (isset($category_fallbacks[$category])) {
+                $fallback_keywords = array_merge($fallback_keywords, $category_fallbacks[$category]);
+            }
+        }
+        
+        // ビアスタイルから一般的な商品への詳細マッピング
         $style_to_general = array(
-            'IPA' => 'クラフトビール IPA',
-            'ヘイジーIPA' => 'NEIPA',
-            'スタウト' => '黒ビール',
-            'ピルスナー' => 'ラガービール',
-            'ヴァイツェン' => '小麦ビール'
+            'IPA' => array('IPA ビール', 'インディアペールエール', 'ホップ ビール'),
+            'ヘイジーIPA' => array('NEIPA', 'ヘイジー ビール', 'フルーティ IPA'),
+            'スタウト' => array('スタウト ビール', '黒ビール', 'ダーク エール'),
+            'ピルスナー' => array('ピルスナー ビール', 'ラガービール', 'すっきり ビール'),
+            'ヴァイツェン' => array('ヴァイツェン ビール', '小麦ビール', 'ホワイトエール'),
+            'セゾン' => array('セゾン ビール', 'ベルジャン エール', 'ファームハウス'),
+            'ポーター' => array('ポーター ビール', '黒ビール', 'ダーク ビール')
         );
         
         foreach ($original_keywords as $keyword) {
             if (isset($style_to_general[$keyword])) {
-                $fallback_keywords[] = $style_to_general[$keyword];
+                $fallback_keywords = array_merge($fallback_keywords, $style_to_general[$keyword]);
             }
         }
         
-        // 一般的なキーワードを追加
-        $fallback_keywords[] = 'クラフトビール ギフト';
-        $fallback_keywords[] = 'ビール 贈り物';
-        $fallback_keywords[] = 'クラフトビール セット';
+        // 優先度付きの一般的なキーワードを追加
+        $general_fallbacks = array(
+            // 高優先度
+            'クラフトビール ギフト',
+            'ビール 詰め合わせ',
+            '地ビール セット',
+            
+            // 中優先度
+            'ビール 贈り物',
+            'クラフトビール セット',
+            'ビールグラス',
+            
+            // 低優先度（最終手段）
+            'ビール',
+            'アルコール ギフト'
+        );
         
-        return array_unique($fallback_keywords);
+        $fallback_keywords = array_merge($fallback_keywords, $general_fallbacks);
+        
+        // 重複を除去し、優先度順で並び替え
+        $unique_fallbacks = array_unique($fallback_keywords);
+        
+        // 長いキーワード（より具体的）を優先
+        usort($unique_fallbacks, function($a, $b) {
+            $score_a = strlen($a) + (strpos($a, 'クラフトビール') !== false ? 5 : 0);
+            $score_b = strlen($b) + (strpos($b, 'クラフトビール') !== false ? 5 : 0);
+            return $score_b - $score_a;
+        });
+        
+        return $unique_fallbacks;
+    }
+    
+    /**
+     * インテリジェントフォールバック検索
+     * キーワード優先度とプラットフォーム特性を考慮した検索
+     */
+    public function intelligent_fallback_search($content, $platform = 'all', $limit = 4) {
+        $keyword_manager = $this->get_keyword_manager();
+        
+        // 詳細キーワード分析
+        $detailed_keywords = $keyword_manager->extract_diverse_keywords($content, 6);
+        
+        if (empty($detailed_keywords)) {
+            // コンテンツからキーワードが抽出できない場合の緊急フォールバック
+            return $this->emergency_fallback_search($platform, $limit);
+        }
+        
+        $all_products = array();
+        
+        // 高優先度キーワードから順に検索
+        $search_attempts = 0;
+        $max_attempts = 3;
+        
+        foreach ($detailed_keywords as $keyword_data) {
+            if ($search_attempts >= $max_attempts) break;
+            
+            $keyword = $keyword_data['keyword'];
+            $category = $keyword_data['category'];
+            $priority = $keyword_data['priority'];
+            
+            // 優先度が低い場合はスキップ
+            if ($priority < 0.5) continue;
+            
+            // プラットフォーム別最適化
+            if ($platform === 'rakuten' || $platform === 'all') {
+                $rakuten_keyword = $keyword_manager->optimize_for_rakuten($keyword, $category);
+                $api = new HopLink_API();
+                $results = $api->search_all($rakuten_keyword, 'rakuten');
+                $all_products = array_merge($all_products, $results);
+            }
+            
+            if ($platform === 'amazon' || $platform === 'all') {
+                $amazon_keyword = $keyword_manager->optimize_for_amazon($keyword, $category);
+                $api = new HopLink_API();
+                $results = $api->search_all($amazon_keyword, 'amazon');
+                $all_products = array_merge($all_products, $results);
+            }
+            
+            $search_attempts++;
+            
+            // 十分な商品が見つかったら終了
+            if (count($all_products) >= $limit * 2) break;
+        }
+        
+        return $all_products;
+    }
+    
+    /**
+     * 緊急フォールバック検索
+     */
+    private function emergency_fallback_search($platform = 'all', $limit = 4) {
+        $emergency_keywords = array(
+            'クラフトビール',
+            'ビール ギフト',
+            '地ビール',
+            'ビールグラス'
+        );
+        
+        $api = new HopLink_API();
+        $all_products = array();
+        
+        foreach ($emergency_keywords as $keyword) {
+            $results = $api->search_all($keyword, $platform);
+            $all_products = array_merge($all_products, $results);
+            
+            if (count($all_products) >= $limit * 2) break;
+        }
+        
+        return $all_products;
     }
 }

@@ -1,58 +1,24 @@
 <?php
 /**
- * キーワード管理クラス
+ * キーワード管理クラス - 優先度付きキーワード解析
  *
  * @package HopLink
  * @since 1.0.0
  */
 
-namespace HopLink;
-
 /**
- * Class Keyword_Manager
+ * Class HopLink_Keyword_Manager
  * 
- * ビール関連キーワードの管理と記事解析を行うクラス
+ * ビール関連キーワードの管理と優先度付き記事解析を行うクラス
  */
-class Keyword_Manager {
+class HopLink_Keyword_Manager {
     
     /**
      * キーワードデータ
      *
      * @var array
      */
-    private $keywords = [];
-    
-    /**
-     * キーワードの重み付け設定
-     *
-     * @var array
-     */
-    private $keyword_weights = [
-        'breweries' => [
-            'japanese' => 1.0,
-            'international' => 0.9
-        ],
-        'beer_styles' => [
-            'ipa_variations' => 0.8,
-            'lager_variations' => 0.8,
-            'dark_beers' => 0.7,
-            'belgian_styles' => 0.7,
-            'other_styles' => 0.6
-        ],
-        'ingredients' => [
-            'hops' => 0.6,
-            'malt' => 0.5,
-            'yeast' => 0.5
-        ],
-        'brewing_terms' => 0.5,
-        'locations' => 0.4,
-        'people' => 0.8,
-        'events_competitions' => 0.6,
-        'product_categories' => 0.7,
-        'related_products' => 0.9,
-        'flavor_descriptions' => 0.4,
-        'brand_specific' => 1.0
-    ];
+    private $keywords_data = null;
     
     /**
      * コンストラクタ
@@ -62,270 +28,377 @@ class Keyword_Manager {
     }
     
     /**
-     * キーワードデータを読み込む
-     *
-     * @return void
+     * キーワードデータを読み込み
      */
     private function load_keywords() {
-        $keyword_file = plugin_dir_path(dirname(__FILE__)) . 'keywords/beer-keywords.json';
+        $keywords_file = HOPLINK_PLUGIN_DIR . 'keywords/beer-keywords.json';
         
-        if (file_exists($keyword_file)) {
-            $json_data = file_get_contents($keyword_file);
-            $this->keywords = json_decode($json_data, true);
-            
-            // キャッシュに保存
-            set_transient('hoplink_keywords', $this->keywords, DAY_IN_SECONDS);
+        if (file_exists($keywords_file)) {
+            $json = file_get_contents($keywords_file);
+            $this->keywords_data = json_decode($json, true);
+        }
+        
+        if (!$this->keywords_data) {
+            $this->keywords_data = $this->get_default_keywords();
         }
     }
     
     /**
-     * 記事内容からキーワードを抽出
-     *
-     * @param string $content 記事内容
-     * @return array 抽出されたキーワードと重要度
+     * デフォルトキーワードを取得
      */
-    public function extract_keywords($content) {
-        $found_keywords = [];
+    private function get_default_keywords() {
+        return array(
+            'priority_weights' => array(
+                'brewery' => 1.0,
+                'beer_style' => 0.9,
+                'location' => 0.8,
+                'ingredient' => 0.7,
+                'brewing_term' => 0.6,
+                'flavor' => 0.5,
+                'product' => 0.4,
+                'general' => 0.1
+            ),
+            'breweries' => array('priority' => 1.0, 'japanese' => array(), 'international' => array()),
+            'beer_styles' => array('priority' => 0.9),
+            'ingredients' => array('priority' => 0.7),
+            'brewing_terms' => array('priority' => 0.6),
+            'locations' => array('priority' => 0.8),
+            'people' => array('priority' => 0.7),
+            'events_competitions' => array('priority' => 0.6),
+            'product_categories' => array('priority' => 0.4),
+            'related_products' => array('priority' => 0.4),
+            'flavor_descriptions' => array('priority' => 0.5),
+            'brand_specific' => array('priority' => 0.6),
+            'general_terms' => array('priority' => 0.1)
+        );
+    }
+    
+    /**
+     * キーワードの重要度スコアを算出
+     */
+    public function calculate_keyword_importance($keywords, $content) {
+        $keyword_scores = array();
+        $text = strtolower(wp_strip_all_tags($content));
         
-        // HTMLタグを除去
-        $clean_content = wp_strip_all_tags($content);
+        foreach ($keywords as $keyword) {
+            $score = 0;
+            $frequency = substr_count($text, strtolower($keyword));
+            
+            if ($frequency > 0) {
+                // 基本スコア（出現頻度）
+                $score = $frequency;
+                
+                // カテゴリ別の重要度重み付け
+                $category_priority = $this->get_keyword_priority($keyword);
+                $score *= $category_priority;
+                
+                // キーワードの長さによる調整（長いキーワードほど重要）
+                $length_bonus = strlen($keyword) / 10;
+                $score += $length_bonus;
+                
+                // 位置による重み付け（タイトルに含まれるかどうか）
+                if (is_array($content) && isset($content['title']) && stripos($content['title'], $keyword) !== false) {
+                    $score *= 1.5; // タイトルに含まれる場合は1.5倍
+                }
+                
+                $keyword_scores[$keyword] = $score;
+            }
+        }
         
-        // 大文字小文字を無視して検索
-        $clean_content_lower = mb_strtolower($clean_content);
+        // スコア順でソート
+        arsort($keyword_scores);
         
-        foreach ($this->keywords as $category => $subcategories) {
-            foreach ($subcategories as $subcategory => $keywords) {
-                if (is_array($keywords)) {
-                    foreach ($keywords as $keyword) {
-                        if ($this->contains_keyword($clean_content_lower, $keyword)) {
-                            $weight = $this->get_keyword_weight($category, $subcategory);
-                            $count = $this->count_keyword_occurrences($clean_content_lower, $keyword);
-                            
-                            $found_keywords[] = [
-                                'keyword' => $keyword,
-                                'category' => $category,
-                                'subcategory' => $subcategory,
-                                'weight' => $weight,
-                                'count' => $count,
-                                'score' => $weight * log($count + 1) // 対数を使用して頻度の影響を緩和
-                            ];
+        return $keyword_scores;
+    }
+    
+    /**
+     * キーワードの優先度を取得
+     */
+    public function get_keyword_priority($keyword) {
+        foreach ($this->keywords_data as $category => $data) {
+            if ($category === 'priority_weights') continue;
+            
+            $found_priority = $this->search_keyword_in_category($keyword, $data);
+            if ($found_priority !== null) {
+                return $found_priority;
+            }
+        }
+        
+        // デフォルト優先度
+        return 0.1;
+    }
+    
+    /**
+     * カテゴリ内でキーワードを検索し、優先度を取得
+     */
+    private function search_keyword_in_category($keyword, $category_data) {
+        if (isset($category_data['priority'])) {
+            $base_priority = $category_data['priority'];
+            
+            // ネストした構造を再帰的に検索
+            foreach ($category_data as $key => $value) {
+                if ($key === 'priority') continue;
+                
+                if (is_array($value)) {
+                    // keywords配列がある場合
+                    if (isset($value['keywords']) && in_array($keyword, $value['keywords'])) {
+                        return isset($value['priority']) ? $value['priority'] : $base_priority;
+                    }
+                    // 直接配列の場合
+                    elseif (in_array($keyword, $value)) {
+                        return $base_priority;
+                    }
+                    // さらに深い構造の場合
+                    else {
+                        $result = $this->search_keyword_in_category($keyword, $value);
+                        if ($result !== null) {
+                            return $result;
                         }
                     }
                 }
             }
         }
         
-        // スコアで降順ソート
-        usort($found_keywords, function($a, $b) {
-            return $b['score'] <=> $a['score'];
-        });
+        return null;
+    }
+    
+    /**
+     * 多様化されたキーワードを抽出（4つの異なるキーワード）
+     */
+    public function extract_diverse_keywords($content, $limit = 4) {
+        $all_keywords = $this->get_all_keywords();
+        $keyword_scores = $this->calculate_keyword_importance($all_keywords, $content);
         
-        return $found_keywords;
-    }
-    
-    /**
-     * キーワードが含まれているかチェック
-     *
-     * @param string $content コンテンツ
-     * @param string $keyword キーワード
-     * @return bool
-     */
-    private function contains_keyword($content, $keyword) {
-        $keyword_lower = mb_strtolower($keyword);
-        return mb_strpos($content, $keyword_lower) !== false;
-    }
-    
-    /**
-     * キーワードの出現回数をカウント
-     *
-     * @param string $content コンテンツ
-     * @param string $keyword キーワード
-     * @return int
-     */
-    private function count_keyword_occurrences($content, $keyword) {
-        $keyword_lower = mb_strtolower($keyword);
-        return mb_substr_count($content, $keyword_lower);
-    }
-    
-    /**
-     * キーワードの重み付けを取得
-     *
-     * @param string $category カテゴリー
-     * @param string $subcategory サブカテゴリー
-     * @return float
-     */
-    private function get_keyword_weight($category, $subcategory) {
-        if (isset($this->keyword_weights[$category])) {
-            if (is_array($this->keyword_weights[$category]) && isset($this->keyword_weights[$category][$subcategory])) {
-                return $this->keyword_weights[$category][$subcategory];
-            } elseif (is_numeric($this->keyword_weights[$category])) {
-                return $this->keyword_weights[$category];
+        if (empty($keyword_scores)) {
+            return array();
+        }
+        
+        $diverse_keywords = array();
+        $used_categories = array();
+        
+        // 異なるカテゴリから上位キーワードを選択
+        foreach ($keyword_scores as $keyword => $score) {
+            if (count($diverse_keywords) >= $limit) {
+                break;
+            }
+            
+            $category = $this->get_keyword_category($keyword);
+            
+            // 同じカテゴリから2つ以上選ばないようにする（ただし、ブルワリーとビアスタイルは例外）
+            if (!in_array($category, $used_categories) || 
+                ($category === 'breweries' || $category === 'beer_styles') && count(array_filter($used_categories, function($cat) use ($category) { return $cat === $category; })) < 2) {
+                
+                $diverse_keywords[] = array(
+                    'keyword' => $keyword,
+                    'score' => $score,
+                    'category' => $category,
+                    'priority' => $this->get_keyword_priority($keyword)
+                );
+                
+                $used_categories[] = $category;
             }
         }
         
-        return 0.5; // デフォルト値
+        // 不足分を補完
+        if (count($diverse_keywords) < $limit) {
+            foreach ($keyword_scores as $keyword => $score) {
+                if (count($diverse_keywords) >= $limit) {
+                    break;
+                }
+                
+                // まだ選ばれていないキーワードを追加
+                $already_selected = array_column($diverse_keywords, 'keyword');
+                if (!in_array($keyword, $already_selected)) {
+                    $diverse_keywords[] = array(
+                        'keyword' => $keyword,
+                        'score' => $score,
+                        'category' => $this->get_keyword_category($keyword),
+                        'priority' => $this->get_keyword_priority($keyword)
+                    );
+                }
+            }
+        }
+        
+        return $diverse_keywords;
     }
     
     /**
-     * 商品検索用のクエリを生成
-     *
-     * @param array $extracted_keywords 抽出されたキーワード
-     * @param int $max_keywords 使用する最大キーワード数
-     * @return array
+     * プラットフォーム別に最適化されたキーワードを生成
      */
-    public function generate_search_queries($extracted_keywords, $max_keywords = 5) {
-        $queries = [];
-        $used_categories = [];
+    public function get_platform_optimized_keywords($base_keywords, $platform) {
+        $optimized_keywords = array();
         
-        // 上位のキーワードを選択
-        $top_keywords = array_slice($extracted_keywords, 0, $max_keywords);
-        
-        // プライマリクエリ（ブルワリー名や商品名）
-        $primary_queries = [];
-        $secondary_queries = [];
-        
-        foreach ($top_keywords as $keyword_data) {
+        foreach ($base_keywords as $keyword_data) {
             $keyword = $keyword_data['keyword'];
             $category = $keyword_data['category'];
             
-            // カテゴリーに応じて振り分け
-            if (in_array($category, ['breweries', 'brand_specific', 'related_products'])) {
-                $primary_queries[] = $keyword;
+            if ($platform === 'rakuten') {
+                // 楽天向けの最適化
+                $optimized_keywords[] = $this->optimize_for_rakuten($keyword, $category);
+            } elseif ($platform === 'amazon') {
+                // Amazon向けの最適化
+                $optimized_keywords[] = $this->optimize_for_amazon($keyword, $category);
             } else {
-                $secondary_queries[] = $keyword;
+                $optimized_keywords[] = $keyword;
             }
-            
-            $used_categories[$category] = true;
         }
         
-        // クエリの組み立て
-        if (!empty($primary_queries)) {
-            $queries['primary'] = implode(' OR ', array_slice($primary_queries, 0, 3));
-        }
-        
-        if (!empty($secondary_queries)) {
-            $queries['secondary'] = implode(' ', array_slice($secondary_queries, 0, 2));
-        }
-        
-        // フォールバッククエリ（一般的なキーワード）
-        if (empty($queries)) {
-            $queries['fallback'] = 'クラフトビール';
-        }
-        
-        return $queries;
+        return array_unique($optimized_keywords);
     }
     
     /**
-     * 関連キーワードを取得
-     *
-     * @param string $keyword キーワード
-     * @return array
+     * 楽天向けキーワード最適化
      */
-    public function get_related_keywords($keyword) {
-        $related = [];
-        $keyword_lower = mb_strtolower($keyword);
+    private function optimize_for_rakuten($keyword, $category) {
+        $rakuten_mappings = array(
+            'IPA' => 'IPA ビール',
+            'スタウト' => 'スタウト 黒ビール',
+            'ピルスナー' => 'ピルスナー ビール',
+            'クラフトビール' => 'クラフトビール 地ビール',
+            'ビールグラス' => 'ビアグラス'
+        );
         
-        // 同じサブカテゴリー内のキーワードを探す
-        foreach ($this->keywords as $category => $subcategories) {
-            foreach ($subcategories as $subcategory => $keywords) {
-                if (is_array($keywords) && in_array($keyword, $keywords)) {
-                    // 同じサブカテゴリーの他のキーワードを追加
-                    foreach ($keywords as $related_keyword) {
-                        if ($related_keyword !== $keyword) {
-                            $related[] = $related_keyword;
-                        }
-                    }
-                    break 2;
+        if (isset($rakuten_mappings[$keyword])) {
+            return $rakuten_mappings[$keyword];
+        }
+        
+        // カテゴリ別の追加キーワード
+        switch ($category) {
+            case 'beer_styles':
+                return $keyword . ' ビール';
+            case 'breweries':
+                return $keyword . ' クラフトビール';
+            case 'related_products':
+                return $keyword;
+            default:
+                return $keyword;
+        }
+    }
+    
+    /**
+     * Amazon向けキーワード最適化
+     */
+    private function optimize_for_amazon($keyword, $category) {
+        $amazon_mappings = array(
+            'IPA' => 'IPA beer',
+            'スタウト' => 'stout beer',
+            'ピルスナー' => 'pilsner',
+            'クラフトビール' => 'craft beer',
+            'ビールグラス' => 'beer glass'
+        );
+        
+        if (isset($amazon_mappings[$keyword])) {
+            return $amazon_mappings[$keyword];
+        }
+        
+        // カテゴリ別の追加キーワード
+        switch ($category) {
+            case 'beer_styles':
+                return $keyword;
+            case 'breweries':
+                return $keyword . ' beer';
+            case 'related_products':
+                return $keyword;
+            default:
+                return $keyword;
+        }
+    }
+    
+    /**
+     * 特定カテゴリのキーワードを取得
+     */
+    public function get_keywords_by_category($category) {
+        if (!isset($this->keywords_data[$category])) {
+            return array();
+        }
+        
+        $category_data = $this->keywords_data[$category];
+        return $this->extract_keywords_from_data($category_data);
+    }
+    
+    /**
+     * データ構造からキーワードを抽出
+     */
+    private function extract_keywords_from_data($data) {
+        $keywords = array();
+        
+        foreach ($data as $key => $value) {
+            if ($key === 'priority') continue;
+            
+            if (is_array($value)) {
+                if (isset($value['keywords'])) {
+                    $keywords = array_merge($keywords, $value['keywords']);
+                } else {
+                    $keywords = array_merge($keywords, $this->extract_keywords_from_data($value));
                 }
             }
         }
         
-        return array_slice($related, 0, 5); // 最大5個まで
+        return $keywords;
     }
     
     /**
-     * キーワードのサジェスト機能
-     *
-     * @param string $input 入力文字列
-     * @return array
+     * 全キーワードを取得
      */
-    public function suggest_keywords($input) {
-        $suggestions = [];
-        $input_lower = mb_strtolower($input);
+    public function get_all_keywords() {
+        $all_keywords = array();
         
-        foreach ($this->keywords as $category => $subcategories) {
-            foreach ($subcategories as $subcategory => $keywords) {
-                if (is_array($keywords)) {
-                    foreach ($keywords as $keyword) {
-                        if (mb_strpos(mb_strtolower($keyword), $input_lower) === 0) {
-                            $suggestions[] = [
-                                'keyword' => $keyword,
-                                'category' => $category,
-                                'subcategory' => $subcategory
-                            ];
-                        }
-                    }
-                }
+        foreach ($this->keywords_data as $category => $data) {
+            if ($category === 'priority_weights') continue;
+            
+            $category_keywords = $this->extract_keywords_from_data($data);
+            $all_keywords = array_merge($all_keywords, $category_keywords);
+        }
+        
+        return array_unique($all_keywords);
+    }
+    
+    /**
+     * キーワードのカテゴリを判定
+     */
+    public function get_keyword_category($keyword) {
+        foreach ($this->keywords_data as $category => $data) {
+            if ($category === 'priority_weights') continue;
+            
+            $category_keywords = $this->extract_keywords_from_data($data);
+            if (in_array($keyword, $category_keywords)) {
+                return $category;
             }
         }
         
-        return array_slice($suggestions, 0, 10); // 最大10個まで
+        return 'unknown';
     }
     
     /**
-     * キーワードデータを更新
-     *
-     * @param array $new_keywords 新しいキーワードデータ
-     * @return bool
+     * キーワードを検索
      */
-    public function update_keywords($new_keywords) {
-        $keyword_file = plugin_dir_path(dirname(__FILE__)) . 'keywords/beer-keywords.json';
+    public function search_keywords($query, $limit = 10) {
+        $all_keywords = $this->get_all_keywords();
+        $results = array();
         
-        // バックアップを作成
-        if (file_exists($keyword_file)) {
-            $backup_file = $keyword_file . '.backup.' . date('YmdHis');
-            copy($keyword_file, $backup_file);
-        }
-        
-        // 新しいデータを保存
-        $json_data = json_encode($new_keywords, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
-        $result = file_put_contents($keyword_file, $json_data);
-        
-        if ($result !== false) {
-            $this->keywords = $new_keywords;
-            delete_transient('hoplink_keywords');
-            return true;
-        }
-        
-        return false;
-    }
-    
-    /**
-     * キーワード統計情報を取得
-     *
-     * @return array
-     */
-    public function get_keyword_stats() {
-        $stats = [
-            'total_keywords' => 0,
-            'categories' => []
-        ];
-        
-        foreach ($this->keywords as $category => $subcategories) {
-            $category_count = 0;
-            
-            foreach ($subcategories as $subcategory => $keywords) {
-                if (is_array($keywords)) {
-                    $count = count($keywords);
-                    $category_count += $count;
-                    $stats['categories'][$category][$subcategory] = $count;
-                }
+        foreach ($all_keywords as $keyword) {
+            if (stripos($keyword, $query) !== false) {
+                $results[] = $keyword;
             }
-            
-            $stats['categories'][$category]['total'] = $category_count;
-            $stats['total_keywords'] += $category_count;
         }
         
-        return $stats;
+        return array_slice($results, 0, $limit);
+    }
+    
+    /**
+     * キーワードをカテゴリ別に分類
+     */
+    public function categorize_keywords($keywords) {
+        $categorized = array();
+        
+        foreach ($keywords as $keyword) {
+            $category = $this->get_keyword_category($keyword);
+            if (!isset($categorized[$category])) {
+                $categorized[$category] = array();
+            }
+            $categorized[$category][] = $keyword;
+        }
+        
+        return $categorized;
     }
 }

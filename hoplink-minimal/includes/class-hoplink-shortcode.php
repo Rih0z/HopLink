@@ -134,18 +134,39 @@ class HopLink_Shortcode {
         require_once HOPLINK_PLUGIN_DIR . 'includes/class-hoplink-analyzer.php';
         $analyzer = new HopLink_Analyzer();
         
-        // 記事から商品を自動取得
+        // 記事から商品を自動取得（多様化検索対応）
         $products = $analyzer->get_products_for_post($post->ID, intval($atts['limit']) * 2); // 余分に取得
         
         if (empty($products)) {
-            // キーワードが見つからない場合は、タイトルから検索
-            $keywords = explode(' ', $post->post_title);
-            if (!empty($keywords[0])) {
-                $products = $this->api->search_all($keywords[0], $atts['platform']);
+            // フォールバック: 高優先度キーワードによる検索
+            $detailed_keywords = $analyzer->extract_keywords_detailed($post->post_title . ' ' . $post->post_content, 4);
+            
+            if (!empty($detailed_keywords)) {
+                // キーワードマネージャーを使用してプラットフォーム別検索
+                require_once HOPLINK_PLUGIN_DIR . 'includes/class-keyword-manager.php';
+                $keyword_manager = new HopLink_Keyword_Manager();
+                
+                $all_fallback_products = array();
+                
+                // 楽天向け検索
+                $rakuten_keywords = $keyword_manager->get_platform_optimized_keywords($detailed_keywords, 'rakuten');
+                foreach (array_slice($rakuten_keywords, 0, 2) as $keyword) {
+                    $results = $this->api->search_all($keyword, 'rakuten');
+                    $all_fallback_products = array_merge($all_fallback_products, $results);
+                }
+                
+                // Amazon向け検索
+                $amazon_keywords = $keyword_manager->get_platform_optimized_keywords($detailed_keywords, 'amazon');
+                foreach (array_slice($amazon_keywords, 0, 2) as $keyword) {
+                    $results = $this->api->search_all($keyword, 'amazon');
+                    $all_fallback_products = array_merge($all_fallback_products, $results);
+                }
+                
+                $products = $all_fallback_products;
             }
         }
         
-        // それでも見つからない場合は、フォールバック検索
+        // それでも見つからない場合は、従来のフォールバック検索
         if (empty($products)) {
             $extracted_keywords = $analyzer->extract_keywords($post->post_title . ' ' . $post->post_content, 5);
             $fallback_keywords = $analyzer->get_fallback_keywords($extracted_keywords);
@@ -176,21 +197,40 @@ class HopLink_Shortcode {
             return isset($p['platform']) && $p['platform'] === 'amazon';
         });
         
-        // 各プラットフォームから2商品ずつ選択
-        $selected_products = [];
-        $rakuten_selected = array_slice($rakuten_products, 0, 2);
-        $amazon_selected = array_slice($amazon_products, 0, 2);
+        // プラットフォーム多様化：各プラットフォームから均等に選択
+        $selected_products = array();
+        $target_limit = intval($atts['limit']);
+        $per_platform = ceil($target_limit / 2);
         
-        // 商品をミックスして配列に追加
-        $selected_products = array_merge($rakuten_selected, $amazon_selected);
+        $rakuten_selected = array_slice($rakuten_products, 0, $per_platform);
+        $amazon_selected = array_slice($amazon_products, 0, $per_platform);
         
-        // 商品が不足している場合は調整
-        if (count($selected_products) < intval($atts['limit'])) {
-            $selected_products = array_slice($products, 0, intval($atts['limit']));
+        // 交互に選択して多様性を確保
+        $max_length = max(count($rakuten_selected), count($amazon_selected));
+        for ($i = 0; $i < $max_length && count($selected_products) < $target_limit; $i++) {
+            if ($i < count($rakuten_selected)) {
+                $selected_products[] = $rakuten_selected[$i];
+            }
+            if ($i < count($amazon_selected) && count($selected_products) < $target_limit) {
+                $selected_products[] = $amazon_selected[$i];
+            }
         }
         
-        // ランダムに並び替え
-        shuffle($selected_products);
+        // 商品が不足している場合は調整
+        if (count($selected_products) < $target_limit) {
+            $remaining_products = array_diff_key($products, array_flip(array_keys($selected_products)));
+            $additional_needed = $target_limit - count($selected_products);
+            $selected_products = array_merge($selected_products, array_slice($remaining_products, 0, $additional_needed));
+        }
+        
+        // 最終的な並び順を軽くシャッフル（完全ランダムではなく、関連度を維持）
+        if (count($selected_products) > 2) {
+            $first_half = array_slice($selected_products, 0, ceil(count($selected_products) / 2));
+            $second_half = array_slice($selected_products, ceil(count($selected_products) / 2));
+            shuffle($first_half);
+            shuffle($second_half);
+            $selected_products = array_merge($first_half, $second_half);
+        }
         
         // HTML生成
         ob_start();
