@@ -1,6 +1,6 @@
 # HopLink - WordPress アフィリエイトリンク自動生成プラグイン
 
-[![Version](https://img.shields.io/badge/version-1.4.0-blue.svg)](https://github.com/yourusername/hoplink)
+[![Version](https://img.shields.io/badge/version-1.7.0-blue.svg)](https://github.com/Rih0z/HopLink)
 [![WordPress](https://img.shields.io/badge/WordPress-5.0+-green.svg)](https://wordpress.org)
 [![PHP](https://img.shields.io/badge/PHP-7.4+-purple.svg)](https://php.net)
 [![License](https://img.shields.io/badge/license-GPL--2.0+-red.svg)](LICENSE)
@@ -9,21 +9,23 @@ HopLinkは、Amazon・楽天市場のアフィリエイトリンクを自動生�
 
 ## 🌟 主な機能
 
-### 🔍 自動商品検索
-- 記事内容を解析してビール関連キーワードを自動抽出
-- ビアスタイル、ブルワリー名、関連商品を自動認識
-- クラフトビール専門の豊富なキーワード辞書
+### 🔍 インテリジェント商品検索
+- **ビアスタイル優先度システム**: IPA、スタウト等を高優先度で検索
+- **キーワード多様化**: 4つの広告すべてで異なる検索ワードを使用
+- **ブルワリー名認識**: うちゅうブルーイング、ヤッホーブルーイング等を最優先
+- **一般ワード抑制**: 「ビール」等の曖昧なワードの優先度を低く設定
 
 ### 🛒 マルチプラットフォーム対応
 - **Amazon**: PA-API v5対応（条件付き）
 - **楽天市場**: 楽天ウェブサービスAPI対応
-- 両プラットフォームの商品を同時検索・表示
+- **プラットフォーム別最適化**: 楽天・Amazon専用キーワード変換
+- 両プラットフォームから異なるキーワードで商品を選定
 
-### 📱 完全レスポンシブデザイン
-- **PC**: 4列グリッド表示
-- **タブレット**: 2列グリッド表示  
-- **スマホ**: 1列表示
-- スムーズなアニメーション効果
+### 📱 rihobeer.com最適化デザイン
+- **カラーパレット**: 黄色・白主体（#ffd900/#ffffff）で統一
+- **高い可読性**: WCAGアクセシビリティガイドライン準拠
+- **レスポンシブ**: PC4列/タブレット2列/スマホ1列
+- **コントラスト比**: 4.5:1以上で文字が見やすい
 
 ### 🚀 PA-API不要モード
 - **Manual Mode**: 手動で商品情報を登録
@@ -46,8 +48,8 @@ HopLinkは、Amazon・楽天市場のアフィリエイトリンクを自動生�
 
 1. **GitHubから最新版をダウンロード**
    ```bash
-   git clone https://github.com/yourusername/hoplink.git
-   cd hoplink/hoplink-minimal
+   git clone https://github.com/Rih0z/HopLink.git
+   cd HopLink/hoplink-minimal
    ```
 
 2. **設定ファイルの準備**
@@ -271,29 +273,48 @@ GPL-2.0+ - [LICENSE](LICENSE) ファイルを参照
 
 ## 📞 サポート
 
-- **Issues**: [GitHub Issues](https://github.com/yourusername/hoplink/issues)
-- **ドキュメント**: [Wiki](https://github.com/yourusername/hoplink/wiki)
-- **メール**: your.email@example.com
+- **Issues**: [GitHub Issues](https://github.com/Rih0z/HopLink/issues)
+- **ドキュメント**: [Wiki](https://github.com/Rih0z/HopLink/wiki)
+- **リリース**: [Releases](https://github.com/Rih0z/HopLink/releases)
 
 ## 🎯 ロードマップ
 
-### v1.5.0 (予定)
-- [ ] WooCommerce連携
+### v1.8.0 (予定)
 - [ ] 商品比較機能
-- [ ] 詳細な統計機能
+- [ ] 詳細な統計とアナリティクス
+- [ ] A/Bテスト機能
 
-### v1.6.0 (予定)  
+### v1.9.0 (予定)  
+- [ ] WooCommerce連携
 - [ ] Gutenbergブロック強化
+- [ ] 他ECサイト対応（Yahoo!ショッピング等）
+
+### v2.0.0 (予定)
 - [ ] 多言語対応
-- [ ] 他ECサイト対応
+- [ ] AI-powered商品推薦
+- [ ] パフォーマンス分析ダッシュボード
 
 ## 📊 更新履歴
 
+### v1.7.0 (2025-01-09)
+- 🎯 **ビアスタイル優先度システム**: IPA、スタウト等を高優先度に設定
+- 🔄 **キーワード多様化**: 4つの広告すべてで異なる検索ワード
+- 🛒 **プラットフォーム別最適化**: 楽天・Amazon専用キーワード変換
+- 🧠 **インテリジェント検索**: 重要度スコアリングとフォールバック機能
+
+### v1.6.0 (2025-01-09)
+- 🎨 **rihobeer.com完全対応**: 黄色・白主体デザイン
+- 👁️ **アクセシビリティ**: WCAGガイドライン準拠、高コントラスト
+- 📱 **可読性向上**: テキスト可読性を最優先に設計
+
+### v1.5.0 (2025-01-09)
+- 🎨 **デザイン最適化**: rihobeer.comスタイル適用
+- 🎯 **カラー統一**: ブランドカラーパレット統一
+
 ### v1.4.0 (2025-01-09)
-- ✨ レスポンシブ広告レイアウト対応
-- ✨ 楽天→Amazon商品マッチング機能
-- 🎨 表示を「関連する広告」に変更
-- 📱 PC4列/タブレット2列/スマホ1列対応
+- ✨ **レスポンシブ広告**: PC4列/タブレット2列/スマホ1列
+- 🔄 **クロスプラットフォーム**: 楽天→Amazon商品マッチング
+- 🎨 **広告表示**: 「関連する広告」表示に変更
 
 ### v1.3.0 (2025-01-09)
 - ✨ Amazon URLからASIN自動抽出
@@ -319,6 +340,6 @@ GPL-2.0+ - [LICENSE](LICENSE) ファイルを参照
 
 **HopLink** で効率的なアフィリエイト運営を始めましょう！
 
-[⬇️ ダウンロード](https://github.com/yourusername/hoplink/releases) | [📖 ドキュメント](https://github.com/yourusername/hoplink/wiki) | [🐛 Issues](https://github.com/yourusername/hoplink/issues)
+[⬇️ ダウンロード](https://github.com/Rih0z/HopLink/releases) | [📖 ドキュメント](https://github.com/Rih0z/HopLink/wiki) | [🐛 Issues](https://github.com/Rih0z/HopLink/issues)
 
 </div>
