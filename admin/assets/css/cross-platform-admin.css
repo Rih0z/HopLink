@@ -2,11 +2,27 @@
  * Cross Platform Admin Styles
  *
  * クロスプラットフォーム管理画面のスタイル
+ * Optimized for rihobeer.com color palette
  *
  * @package HopLink
  * @subpackage Admin
  * @since 1.0.0
  */
+
+/* Color Variables for rihobeer.com */
+:root {
+    --rihobeer-yellow-bright: #ffd900;
+    --rihobeer-yellow-dark: #fcb900;
+    --rihobeer-white: #ffffff;
+    --rihobeer-off-white: #fffffb;
+    --rihobeer-soft-beige: #f8f4e6;
+    --rihobeer-indigo: #19448e;
+    --rihobeer-accent-yellow: #ee2;
+    --rihobeer-accent-green: #8f0;
+    --rihobeer-accent-blue: #07f;
+    --rihobeer-text-dark: #333333;
+    --rihobeer-text-light: #666666;
+}
 
 /* 全体レイアウト */
 .hoplink-cross-platform-admin {
@@ -101,11 +117,11 @@
 }
 
 .hoplink-test-product.rakuten {
-    border-left-color: #bf0000;
+    border-left-color: var(--rihobeer-accent-green);
 }
 
 .hoplink-test-product.amazon {
-    border-left-color: #ff9900;
+    border-left-color: var(--rihobeer-accent-blue);
 }
 
 .hoplink-test-product h4 {
@@ -127,7 +143,7 @@
 
 .match-score {
     font-weight: bold;
-    color: #28a745;
+    color: var(--rihobeer-accent-green);
 }
 
 /* 統計グリッド */
@@ -139,8 +155,8 @@
 }
 
 .hoplink-stat-item {
-    background: #f8f9fa;
-    border: 1px solid #dee2e6;
+    background: var(--rihobeer-off-white);
+    border: 1px solid var(--rihobeer-yellow-dark);
     border-radius: 4px;
     padding: 20px;
     text-align: center;
@@ -179,8 +195,8 @@
     display: inline-block;
     width: 16px;
     height: 16px;
-    border: 2px solid #f3f3f3;
-    border-top: 2px solid #0073aa;
+    border: 2px solid var(--rihobeer-soft-beige);
+    border-top: 2px solid var(--rihobeer-yellow-bright);
     border-radius: 50%;
     animation: spin 1s linear infinite;
 }
@@ -200,13 +216,13 @@
 }
 
 .hoplink-notice.success {
-    border-left-color: #46b450;
-    background-color: #f0f8f0;
+    border-left-color: var(--rihobeer-accent-green);
+    background-color: var(--rihobeer-soft-beige);
 }
 
 .hoplink-notice.error {
-    border-left-color: #dc3545;
-    background-color: #fef7f7;
+    border-left-color: var(--rihobeer-accent-blue);
+    background-color: var(--rihobeer-off-white);
 }
 
 /* レスポンシブ */

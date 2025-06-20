@@ -2,11 +2,27 @@
  * Cross Platform Styles
  *
  * クロスプラットフォーム機能のスタイル
+ * Optimized for rihobeer.com color palette
  *
  * @package HopLink
  * @subpackage Styles
  * @since 1.0.0
  */
+
+/* Color Variables for rihobeer.com */
+:root {
+    --rihobeer-yellow-bright: #ffd900;
+    --rihobeer-yellow-dark: #fcb900;
+    --rihobeer-white: #ffffff;
+    --rihobeer-off-white: #fffffb;
+    --rihobeer-soft-beige: #f8f4e6;
+    --rihobeer-indigo: #19448e;
+    --rihobeer-accent-yellow: #ee2;
+    --rihobeer-accent-green: #8f0;
+    --rihobeer-accent-blue: #07f;
+    --rihobeer-text-dark: #333333;
+    --rihobeer-text-light: #666666;
+}
 
 /* コンテナ */
 .hoplink-cross-platform-container {
@@ -30,17 +46,17 @@
 
 /* 商品カード */
 .hoplink-product {
-    border: 1px solid #ddd;
+    border: 1px solid var(--rihobeer-yellow-dark);
     border-radius: 8px;
     padding: 20px;
-    background: #fff;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background: var(--rihobeer-white);
+    box-shadow: 0 2px 4px rgba(25, 68, 142, 0.1);
     position: relative;
     transition: box-shadow 0.3s ease;
 }
 
 .hoplink-product:hover {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 8px rgba(25, 68, 142, 0.15);
 }
 
 /* プラットフォームバッジ */
@@ -56,11 +72,13 @@
 }
 
 .hoplink-rakuten-product .hoplink-product-badge {
-    background-color: #bf0000;
+    background-color: var(--rihobeer-accent-green);
+    color: var(--rihobeer-text-dark);
 }
 
 .hoplink-amazon-product .hoplink-product-badge {
-    background-color: #ff9900;
+    background-color: var(--rihobeer-accent-blue);
+    color: var(--rihobeer-white);
 }
 
 /* 商品画像 */
@@ -85,7 +103,7 @@
 .hoplink-product-title {
     font-size: 16px;
     font-weight: bold;
-    color: #333;
+    color: var(--rihobeer-text-dark);
     margin: 0 0 10px 0;
     line-height: 1.4;
     display: -webkit-box;
@@ -101,12 +119,12 @@
 }
 
 .hoplink-price-label {
-    color: #666;
+    color: var(--rihobeer-text-light);
     font-size: 14px;
 }
 
 .hoplink-price-value {
-    color: #e47911;
+    color: var(--rihobeer-indigo);
     font-weight: bold;
     margin-left: 5px;
 }
@@ -115,7 +133,7 @@
 .hoplink-product-shop {
     margin: 10px 0;
     font-size: 14px;
-    color: #666;
+    color: var(--rihobeer-text-light);
 }
 
 .hoplink-shop-label {
@@ -129,7 +147,7 @@
 }
 
 .hoplink-availability-status {
-    color: #007600;
+    color: var(--rihobeer-accent-green);
     font-weight: 500;
 }
 
@@ -140,12 +158,12 @@
 }
 
 .hoplink-rating-stars {
-    color: #ff9900;
+    color: var(--rihobeer-yellow-bright);
     margin-right: 5px;
 }
 
 .hoplink-rating-count {
-    color: #666;
+    color: var(--rihobeer-text-light);
     font-size: 12px;
 }
 
@@ -153,19 +171,19 @@
 .hoplink-match-info {
     margin: 10px 0;
     padding: 8px;
-    background-color: #f0f8ff;
+    background-color: var(--rihobeer-soft-beige);
     border-radius: 4px;
     font-size: 12px;
 }
 
 .hoplink-match-label {
-    color: #666;
+    color: var(--rihobeer-text-light);
     margin-right: 5px;
 }
 
 .hoplink-match-score {
     font-weight: bold;
-    color: #007600;
+    color: var(--rihobeer-accent-green);
 }
 
 /* アクションボタン */
@@ -188,24 +206,24 @@
 }
 
 .hoplink-rakuten-button {
-    background-color: #bf0000;
-    color: #fff;
+    background-color: var(--rihobeer-yellow-bright);
+    color: var(--rihobeer-text-dark);
 }
 
 .hoplink-rakuten-button:hover {
-    background-color: #a00000;
-    color: #fff;
+    background-color: var(--rihobeer-yellow-dark);
+    color: var(--rihobeer-text-dark);
     text-decoration: none;
 }
 
 .hoplink-amazon-button {
-    background-color: #ff9900;
-    color: #fff;
+    background-color: var(--rihobeer-yellow-bright);
+    color: var(--rihobeer-text-dark);
 }
 
 .hoplink-amazon-button:hover {
-    background-color: #e88600;
-    color: #fff;
+    background-color: var(--rihobeer-yellow-dark);
+    color: var(--rihobeer-text-dark);
     text-decoration: none;
 }
 
@@ -213,20 +231,20 @@
 .hoplink-no-match-notice {
     margin-top: 15px;
     padding: 10px;
-    background-color: #f5f5f5;
+    background-color: var(--rihobeer-soft-beige);
     border-radius: 4px;
     text-align: center;
     font-size: 14px;
-    color: #666;
+    color: var(--rihobeer-text-dark);
 }
 
 /* 商品なしメッセージ */
 .hoplink-cross-no-products {
     padding: 20px;
     text-align: center;
-    background-color: #f5f5f5;
+    background-color: var(--rihobeer-soft-beige);
     border-radius: 4px;
-    color: #666;
+    color: var(--rihobeer-text-dark);
 }
 
 /* レスポンシブ対応 */
@@ -255,31 +273,39 @@
 
 /* ダークモード対応 */
 @media (prefers-color-scheme: dark) {
+    :root {
+        --rihobeer-white: #2a2a2a;
+        --rihobeer-off-white: #333333;
+        --rihobeer-soft-beige: #404040;
+        --rihobeer-text-dark: #ffffff;
+        --rihobeer-text-light: #bbbbbb;
+    }
+    
     .hoplink-product {
-        background: #2a2a2a;
-        border-color: #444;
-        color: #fff;
+        background: var(--rihobeer-white);
+        border-color: var(--rihobeer-yellow-dark);
+        color: var(--rihobeer-text-dark);
     }
     
     .hoplink-product-title {
-        color: #fff;
+        color: var(--rihobeer-text-dark);
     }
     
     .hoplink-shop-label,
     .hoplink-price-label,
     .hoplink-rating-count {
-        color: #bbb;
+        color: var(--rihobeer-text-light);
     }
     
     .hoplink-no-match-notice,
     .hoplink-cross-no-products {
-        background-color: #333;
-        color: #bbb;
+        background-color: var(--rihobeer-soft-beige);
+        color: var(--rihobeer-text-light);
     }
     
     .hoplink-match-info {
-        background-color: #1a3a52;
-        color: #fff;
+        background-color: var(--rihobeer-indigo);
+        color: var(--rihobeer-text-dark);
     }
 }
 
@@ -313,8 +339,8 @@
     transform: translate(-50%, -50%);
     width: 40px;
     height: 40px;
-    border: 3px solid #f3f3f3;
-    border-top: 3px solid #bf0000;
+    border: 3px solid var(--rihobeer-soft-beige);
+    border-top: 3px solid var(--rihobeer-yellow-bright);
     border-radius: 50%;
     animation: spin 1s linear infinite;
 }
