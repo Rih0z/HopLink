@@ -2,6 +2,12 @@
 /**
  * Amazon PA-API v5 integration class
  */
+
+// 直接アクセスを防ぐ
+if (!defined('ABSPATH')) {
+    exit;
+}
+
 class HopLink_Amazon_API {
     
     /**

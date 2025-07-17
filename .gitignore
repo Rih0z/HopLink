@@ -20,6 +20,9 @@ config.php
 
 # API Keys and Credentials  
 hoplink-minimal/config.php
+*.key
+*.pem
+*.p12
 
 # IDE
 .vscode/

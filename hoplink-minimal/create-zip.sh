@@ -6,7 +6,7 @@
 cd "$(dirname "$0")"
 
 # バージョン番号（必要に応じて変更）
-VERSION="1.7.1"
+VERSION="1.7.2"
 
 # ZIPファイル名
 ZIP_NAME="hoplink-minimal-v${VERSION}.zip"
