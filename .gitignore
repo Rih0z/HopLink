@@ -48,8 +48,15 @@ debug-*.log
 *.log
 
 # Test files
-test-*.php
+test-responsive.html
 debug-*.php
+
+# PHPUnit Test Results
+/tests/coverage/
+.phpunit.result.cache
+
+# Claude AI logs
+.claude/logs/
 
 # Documentation drafts
 document/drafts/
